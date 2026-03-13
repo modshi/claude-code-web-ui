@@ -1,0 +1,13 @@
+{
+  "name": "claude-web-ui",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "lucide": "^0.577.0",
+    "ws": "^8.18.0"
+  }
+}

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content, viewport-fit=cover">
+  <meta name="description" content="Claude Code Web UI - Code editing and AI assistance">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Claude Code">
+  <meta name="apple-mobile-web-app-status-bar" content="black-translucent">
+  <meta name="theme-color" content="#1e1e1e">
+  <meta name="color-scheme" content="dark">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <title>Claude Code</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  <link rel="stylesheet" href="/style.css?v=13">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
+
+</head>
+<body>
+  <div id="app">
+    <!-- Notifications container -->
+    <div id="notificationsContainer" class="notifications-container"></div>
+
+    <!-- Header -->
+    <header id="header">
+      <div class="header-left">
+        <svg class="claude-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+          <path d="M4.709 15.955l4.397-2.006a.273.273 0 0 1 .222 0l4.397 2.006a.327.327 0 0 0 .306-.03.344.344 0 0 0 .147-.278V4.353c0-.126-.064-.241-.168-.305a.273.273 0 0 0-.327.012L9.286 7.432 4.889 4.06a.273.273 0 0 0-.327-.012.344.344 0 0 0-.168.305v11.294c0 .115.055.222.147.278a.327.327 0 0 0 .168.03z"/>
+        </svg>
+        <span class="header-title">Claude Code</span>
+
+        <!-- Model selector -->
+        <div class="model-selector" id="modelSelector">
+          <button class="model-btn" id="modelBtn">
+            <span id="modelLabel">opus</span>
+            <i data-lucide="chevron-down" class="lucide-sm"></i>
+          </button>
+          <div class="model-menu" id="modelMenu">
+            <div class="model-option selected" data-model="opus">Opus <span class="model-desc">Most capable</span></div>
+            <div class="model-option" data-model="sonnet">Sonnet <span class="model-desc">Balanced</span></div>
+            <div class="model-option" data-model="haiku">Haiku <span class="model-desc">Fastest</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-center">
+        <div class="session-dropdown" id="sessionDropdown">
+          <button class="session-btn" id="sessionBtn">
+            <span class="session-btn-label" id="sessionLabel">New Session</span>
+            <i data-lucide="chevron-down" class="lucide-sm"></i>
+          </button>
+          <div class="session-menu" id="sessionMenu">
+            <div class="session-menu-header">
+              <span>Sessions</span>
+              <button class="session-new-btn" id="newSessionBtn">+ New</button>
+            </div>
+            <div class="session-list" id="sessionList"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <button class="workdir-btn" id="workdirBtn" title="Working directory">
+          <i data-lucide="folder" class="lucide-xs"></i>
+          <span id="workdirLabel">/root</span>
+        </button>
+        <input type="hidden" id="workdirInput" value="/root">
+        <div class="header-actions">
+          <div class="settings-dropdown" id="settingsDropdown">
+            <button class="header-action-btn" id="settingsBtn" title="Settings"><i data-lucide="ellipsis" class="lucide-sm"></i></button>
+            <div class="settings-menu" id="settingsMenu">
+              <div class="settings-menu-item" id="fontUpBtn">
+                <i data-lucide="a-arrow-up" class="lucide-sm"></i>
+                <span>Larger text</span>
+              </div>
+              <div class="settings-menu-item" id="fontDownBtn">
+                <i data-lucide="a-arrow-down" class="lucide-sm"></i>
+                <span>Smaller text</span>
+              </div>
+              <div class="settings-menu-divider"></div>
+              <div class="settings-menu-item" id="refreshBtn">
+                <i data-lucide="refresh-cw" class="lucide-sm"></i>
+                <span>Refresh</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Mobile more button -->
+        <button class="mobile-more-btn" id="mobileMoreBtn" title="More">
+          <i data-lucide="ellipsis-vertical" class="lucide-md"></i>
+        </button>
+      </div>
+
+    </header>
+
+    <!-- Mobile more menu overlay -->
+    <div class="mobile-menu-overlay hidden" id="mobileMenuOverlay">
+      <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-item" id="mobileModelItem">
+          <i data-lucide="sun" class="lucide-md"></i>
+          <span>Model: <strong id="mobileModelLabel">opus</strong></span>
+        </div>
+        <div class="mobile-menu-item" id="mobileWorkdirItem">
+          <i data-lucide="folder" class="lucide-md"></i>
+          <span id="mobileWorkdirLabel">/root</span>
+        </div>
+        <div class="mobile-menu-divider"></div>
+        <div class="mobile-menu-item" id="mobileFontDownItem">
+          <i data-lucide="minus" class="lucide-md"></i>
+          <span>Smaller text</span>
+        </div>
+        <div class="mobile-menu-item" id="mobileFontUpItem">
+          <i data-lucide="plus" class="lucide-md"></i>
+          <span>Larger text</span>
+        </div>
+        <div class="mobile-menu-divider"></div>
+        <div class="mobile-menu-item" id="mobileRefreshItem">
+          <i data-lucide="refresh-cw" class="lucide-md"></i>
+          <span>Refresh</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Messages area -->
+    <div id="messages">
+      <div class="welcome">
+        <div class="welcome-icon">
+          <svg viewBox="0 0 46 46" width="48" height="48">
+            <path fill="#D97706" d="M23 0C10.297 0 0 10.297 0 23s10.297 23 23 23 23-10.297 23-23S35.703 0 23 0z"/>
+            <path fill="#FFF" d="M13.5 18.5c0-1.933 1.567-3.5 3.5-3.5s3.5 1.567 3.5 3.5v4c0 1.933-1.567 3.5-3.5 3.5s-3.5-1.567-3.5-3.5v-4zm12 0c0-1.933 1.567-3.5 3.5-3.5s3.5 1.567 3.5 3.5v4c0 1.933-1.567 3.5-3.5 3.5s-3.5-1.567-3.5-3.5v-4zM15 31c0-.552.448-1 1-1h14c.552 0 1 .448 1 1s-.448 1-1 1H16c-.552 0-1-.448-1-1z"/>
+          </svg>
+        </div>
+        <h2>What can I help you with?</h2>
+        <p class="welcome-sub">I can read, edit, and create files, run commands, search your codebase, and more.</p>
+      </div>
+    </div>
+
+    <!-- Activity indicator (in chat area) -->
+    <div id="activityBar" class="activity-bar hidden">
+      <div class="activity-indicator">
+        <span class="activity-dot"></span>
+        <span id="activityText">Doing...</span>
+      </div>
+    </div>
+
+    <!-- Status bar (between chat and input) -->
+    <div id="statusBar">
+      <div class="ws-indicator" id="wsIndicator">
+        <span class="ws-dot" id="wsDot"></span>
+        <span id="wsLabel">Connecting</span>
+      </div>
+      <span id="statusText"></span>
+    </div>
+
+    <!-- Input area -->
+    <div id="inputArea">
+      <div class="input-wrapper">
+        <div class="input-container">
+          <textarea
+            id="promptInput"
+            placeholder="Ask Claude..."
+            rows="1"
+            autofocus
+          ></textarea>
+        </div>
+        <div class="input-actions">
+          <span class="key-hint desktop-only">Enter to send</span>
+          <button id="stopBtn" class="stop-btn hidden" title="Stop">
+            <i data-lucide="square" class="lucide-sm"></i>
+          </button>
+          <button id="sendBtn" title="Send">
+            <i data-lucide="send" class="lucide-md"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Directory picker modal -->
+    <div class="dir-picker-overlay hidden" id="dirPickerOverlay">
+      <div class="dir-picker">
+        <div class="dir-picker-header">
+          <span>Select Working Directory</span>
+          <button class="dir-picker-close" id="dirPickerClose"><i data-lucide="x" class="lucide-md"></i></button>
+        </div>
+        <div class="dir-picker-current" id="dirPickerCurrent">/root</div>
+        <div class="dir-picker-path-input">
+          <input type="text" id="dirPickerInput" placeholder="/path/to/project" spellcheck="false">
+          <button id="dirPickerGo">Go</button>
+        </div>
+        <div class="dir-picker-list" id="dirPickerList"></div>
+        <div class="dir-picker-footer">
+          <span class="dir-picker-hint" id="dirPickerHint"></span>
+          <button class="dir-picker-select" id="dirPickerSelect">Select This Directory</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/vendor/lucide.min.js?v=2"></script>
+  <script src="/app.js?v=22"></script>
+</body>
+</html>
