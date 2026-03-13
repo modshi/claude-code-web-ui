@@ -3,3 +3,8 @@ data/
 server.log
 *.log
 .env
+.env.*
+sessions.json
+slack-config.json
+*.pem
+*.key
