@@ -1,5 +1,6 @@
 {
-  "name": "claude-web-ui",
+  "name": "claude-code-web-ui",
+  "description": "A web-based UI for Claude Code CLI — because the terminal isn't always enough",
   "version": "1.0.0",
   "private": true,
   "scripts": {

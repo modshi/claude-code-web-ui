@@ -80,7 +80,7 @@ The server acts as a bridge between the browser and the Claude CLI. It:
 
 ```bash
 git clone <repo-url>
-cd claude-web-ui
+cd claude-code-web-ui
 npm install
 ```
 
@@ -117,7 +117,7 @@ All configuration is via environment variables:
 ## Project Structure
 
 ```
-claude-web-ui/
+claude-code-web-ui/
 ├── server.js              # Express + WebSocket server, Claude process manager
 ├── slack.js               # Slack notification module (webhook integration)
 ├── package.json           # Dependencies: express, ws, lucide
